@@ -6,7 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="SpringMCV_Hello" />
+        <module name="SpringMVC_Annotation_Hello2" />
+      </profile>
+      <profile name="Annotation profile for Learn_SpringMVC" enabled="true">
+        <sourceOutputDir name="../SpringMCV_Hello/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../SpringMCV_Hello/target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="SpringMVC_Hello" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

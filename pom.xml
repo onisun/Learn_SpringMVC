@@ -11,6 +11,7 @@
     <modules>
         <module>HelloSpringMVC</module>
         <module>SpringMCV_Hello</module>
+        <module>SpringMVC_Annotation_Hello2</module>
     </modules>
 
 
