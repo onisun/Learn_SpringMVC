@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="SpringMVC_Annotation_Hello2" />
+        <module name="Spring_03" />
       </profile>
       <profile name="Annotation profile for Learn_SpringMVC" enabled="true">
         <sourceOutputDir name="../SpringMCV_Hello/target/generated-sources/annotations" />
