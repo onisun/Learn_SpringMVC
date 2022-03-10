@@ -8,9 +8,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
-    <title>$Title$</title>
+    <title>ASR</title>
   </head>
+  <%
+    pageContext.setAttribute("ctx",request.getContextPath());
+  %>
   <body>
-  $END$
+  Access Static Resources 
+  <img src="${ctx}/images/wallhaven-wyjvgx.jpg" height="100%" width="100%">
   </body>
 </html>
