@@ -311,9 +311,11 @@ public class MyView implements View {
 
 
 ```xml
-<bean id="myViewResolver" class="com.onisun.demo1.viewResolver.MyViewResolver">
-    <property name="order" value="1"/>
-</bean>
+<!--    自定义视图解析器-->
+    <bean id="myViewResolver" class="com.onisun.demo1.viewResolver.MyViewResolver">
+<!--        设置执行优先-->
+        <property name="order" value="1"/>
+    </bean>
 ```
 
 
@@ -321,3 +323,193 @@ public class MyView implements View {
 
 
 ### 自定义类型转换器
+
+定义一个类实现Converter接口，来实现自定义类型转换
+
+```java
+package com.onisun.demo1.converter;
+
+import com.onisun.demo1.bean.Person;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+/**
+ * @author Neo
+ * @version 1.0
+ */
+@Component
+public class MyConverter implements Converter<String, Person> {
+
+    public Person convert(String source) {
+        Person person = null;
+        String[] split = source.split("-");
+        if (source != null && split.length == 4){
+            person = new Person();
+            person.setId(Integer.parseInt(split[0]));
+            person.setName(split[1]);
+            person.setAge(Integer.parseInt(split[2]));
+            person.setGender(split[3]);
+            System.out.println("convert-----"+person);
+        }
+            return person;
+    }
+}
+```
+
+
+
+在applicationContext.xml中配置这个类
+
+```xml
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+<!--        自定义类型转换-->
+        <property name="converters">
+            <set>
+                <ref bean="myConverter"/>
+            </set>
+        </property>
+    </bean>
+```
+
+表单
+
+```jsp
+<form action="${ctx}/dateConvertion" method="post">
+  编号：<input type="text" name="id"><br>
+  姓名：<input type="text" name="name"><br>
+  年龄：<input type="text" name="age"><br>
+  性别：<input type="text" name="gender"><br>
+  日期：<input type="text" name="birth"><br>
+  <input type="submit" value="自定义日期格式转换器"/>
+</form>
+```
+
+
+
+```java
+@RequestMapping("/dateConvertion")
+public String dateConvertion(Person person, Model model){
+    System.out.println(person);
+    model.addAttribute("person",person);
+    return "success";
+}
+```
+
+
+
+### 后端数据校验
+
+![image-20220311230549562](image/image-20220311230549562.png)
+
+
+
+![image-20220311230601076](image/image-20220311230601076.png)
+
+引入pom依赖
+
+```xml
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>5.1.0.Final</version>
+</dependency>
+```
+
+
+
+使用注解
+
+```java
+package com.onisun.demo1.bean;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import java.util.Date;
+
+/**
+ * @author Neo
+ * @version 1.0
+ */
+public class Person {
+    private Integer id;
+    @NotNull
+    @Length(min = 5,max = 10)
+    private String name;
+    private Integer age;
+    @Length(max = 2)
+    private String gender;
+    @Past
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birth;
+    @Email
+    private String email;
+}
+```
+
+
+
+使用@Valid
+
+```java
+package com.onisun.demo1.controller;
+
+import com.onisun.demo1.bean.Person;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Neo
+ * @version 1.0
+ */
+@Controller
+public class DataValiDateController {
+
+    @RequestMapping("/dataValidate")
+    public String dataValiDate(@Valid Person person,BindingResult bindingResult,Model model){
+
+        System.out.println(person);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if (bindingResult.hasErrors()){
+            System.out.println("登陆失败");
+            //获取到所有的错误
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fieldError : fieldErrors) {
+                System.out.println(fieldError.getField());
+                System.out.println(fieldError.getDefaultMessage());
+                //给前端取值
+                map.put(fieldError.getField(),fieldError.getDefaultMessage());
+            }
+            model.addAttribute("errors",map);
+            return "forward:/index.jsp";
+        }else {
+            System.out.println("登陆成功");
+            return "success";
+        }
+    }
+}
+```
+
+
+
+```jsp
+<form action="${ctx}/dataValidate" method="post">
+    编号：<input type="text" name="id">${errors.id}<br>
+    姓名：<input type="text" name="name">${errors.name}<br>
+    年龄：<input type="text" name="age">${errors.age}<br>
+    性别：<input type="text" name="gender">${errors.gender}<br>
+    日期：<input type="text" name="birth">${errors.birth}<br>
+    邮箱：<input type="text" name="email">${errors.email}<br>
+    <input type="submit" value="数据校验">
+</form>
+```

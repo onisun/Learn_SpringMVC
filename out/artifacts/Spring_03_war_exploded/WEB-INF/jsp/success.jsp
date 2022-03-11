@@ -11,6 +11,7 @@
     <title>Title</title>
 </head>
 <body>
-    操作成功
+    操作成功<br/>
+<%--${requestScope.person}--%>
 </body>
 </html>

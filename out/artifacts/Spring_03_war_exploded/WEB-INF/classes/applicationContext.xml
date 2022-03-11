@@ -26,8 +26,20 @@
         <property name="order" value="1"/>
     </bean>
 
+
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <ref bean="myConverter"/>
+            </set>
+        </property>
+    </bean>
+
 <!--    配置这个后可以访问静态资源，但是会访问不了其他请求 -->
     <mvc:default-servlet-handler/>
 <!--    静态资源和动态请求都能访问-->
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven conversion-service="conversionService"/>
+
+
+
 </beans>
