@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="SpringMVC_Annotation_Hello2" />
         <module name="Spring_03" />
+        <module name="SpringMVC_04" />
       </profile>
       <profile name="Annotation profile for Learn_SpringMVC" enabled="true">
         <sourceOutputDir name="../SpringMCV_Hello/target/generated-sources/annotations" />
@@ -17,7 +18,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="HelloSpringMVC" target="1.5" />
+      <module name="SpringMVC_Hello" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
